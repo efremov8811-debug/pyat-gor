@@ -62,8 +62,8 @@ window.SHOP = {
       shape: "elbrus",
       color: "#e5412f",
       photo: "img/elbrus.jpg",
-      photoLabel: "Эльбрус и горный чертополох",
-      focus: "25% 50%",
+      photoLabel: "Эльбрус и цветущий иван-чай",
+      focus: "40% 50%", // гора и иван-чай справа
       price: 450,
       weight: 50,
       taste: "Насыщенный, пряный, с кислинкой",
