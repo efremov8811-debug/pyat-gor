@@ -4,16 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Пять гор — горный чай КМВ</title>
+  <script>
+    // Если что-то сломается, показываем текст ошибки вместо пустого экрана — его можно прислать разработчику
+    window.onerror = function (msg, src, line) {
+      var box = document.createElement("pre");
+      box.style.cssText = "white-space:pre-wrap;margin:16px;padding:12px;border-radius:12px;background:#fee;color:#900;font:13px/1.4 monospace";
+      box.textContent = "Витрина не запустилась. Пришли этот текст разработчику:\n" + msg + "\n" + String(src || "").split("/").pop() + ":" + line + "\n" + navigator.userAgent;
+      (document.body || document.documentElement).appendChild(box);
+    };
+  </script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Manrope:wght@400;500;700;800&display=swap">
-  <link rel="stylesheet" href="style.css">
+  <!-- ?v= проставляет publish-webapp.ps1 при каждой публикации, чтобы Telegram не брал старые файлы из кэша -->
+  <link rel="stylesheet" href="style.css?v=20260911103716">
 </head>
 <body>
   <main id="app"></main>
   <div id="story" class="story-viewer" hidden></div>
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+  <script src="data.js?v=20260911103716"></script>
+  <script src="app.js?v=20260911103716"></script>
 </body>
 </html>

@@ -16,8 +16,11 @@
   const missingStories = new Set();
   window.storyMissing = (i, img) => {
     missingStories.add(i);
-    img.closest(".story-btn")?.remove();
-    if (!document.querySelector(".story-btn")) document.getElementById("stories")?.remove();
+    // обычные проверки if вместо «опциональной цепочки» — её не понимают браузеры Telegram на части телефонов
+    const btn = img.closest(".story-btn");
+    if (btn) btn.remove();
+    const strip = document.getElementById("stories");
+    if (strip && !document.querySelector(".story-btn")) strip.remove();
   };
   const neighbourStory = (from, step) => {
     for (let j = from + step; j >= 0 && j < S.STORIES.length; j += step) if (!missingStories.has(j)) return j;
