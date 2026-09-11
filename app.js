@@ -302,8 +302,14 @@
     }
     // Ссылка вида t.me/bot?start=order_elbrus — бот увидит, какой товар выбран
     const link = `https://t.me/${S.BOT_USERNAME}?start=order_${p.id}`;
-    if (inTg) tg.openTelegramLink(link);
-    else window.open(link, "_blank");
+    if (inTg) {
+      tg.openTelegramLink(link);
+      // На телефоне витрина остаётся открытой поверх чата, и ответ бота не виден —
+      // закрываем её сами, чтобы человек сразу увидел корзину
+      setTimeout(() => tg.close(), 300);
+    } else {
+      window.open(link, "_blank");
+    }
   }
 
   // ---------- Telegram ----------
