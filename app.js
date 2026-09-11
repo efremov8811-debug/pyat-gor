@@ -177,13 +177,14 @@
     return inTg ? "" : `<button class="btn" data-order>Заказать · ${rub(p.price)}</button>`;
   }
 
-  function miniCard(t) {
+  function miniCard(p) {
+    const isSet = p.id === SET.id;
     return `
-      <a class="mini" href="#/tea/${t.id}" style="--accent:${t.color}">
-        <span class="tea-sub">${t.subtitle}</span>
-        <span class="mini-name">${t.name}</span>
-        <span class="mini-price">${rub(t.price)}</span>
-        ${mountain(t.shape, "tea-mtn")}
+      <a class="mini${isSet ? " mini-set" : ""}" href="${isSet ? "#/set" : `#/tea/${p.id}`}" style="--accent:${p.color}">
+        <span class="tea-sub">${p.subtitle}</span>
+        <span class="mini-name">${p.name}</span>
+        <span class="mini-price">${rub(p.price)}</span>
+        ${p.shape ? mountain(p.shape, "tea-mtn") : ""}
       </a>`;
   }
 
@@ -230,7 +231,7 @@
 
         <section>
           ${head("Попробуй ещё", "Другие горы")}
-          <div class="hscroll">${TEAS.filter((x) => x.id !== t.id).map(miniCard).join("")}</div>
+          <div class="mini-grid">${[...TEAS.filter((x) => x.id !== t.id), SET].map(miniCard).join("")}</div>
         </section>
       </div>`;
   }
