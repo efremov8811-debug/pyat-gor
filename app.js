@@ -245,7 +245,6 @@
 
         <dl class="facts">
           <div class="fact"><dt>Для кого</dt><dd>${t.forWhom}</dd></div>
-          <div class="fact"><dt>Где собрано</dt><dd>${t.place}</dd></div>
         </dl>
 
         <section>
