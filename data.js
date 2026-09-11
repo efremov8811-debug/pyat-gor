@@ -113,6 +113,18 @@ window.SHOP = {
     { title: "Фасовка", cover: "img/story-4.jpg", video: "video/story-4.mp4", coverLabel: "Фасуем и клеим наклейки", color: "#e5412f" },
   ],
 
+  // Фото из походов за травами — раздел на главной после каталога. Все фото наши.
+  // Первое и последнее фото — широкие, остальные — парами. Нажатие открывает фото на весь экран.
+  GALLERY: [
+    { photo: "img/gallery-elbrus-valley.jpg", caption: "Долина с видом на Эльбрус", focus: "45% 40%" },
+    { photo: "img/story-1.jpg", caption: "Домбай", focus: "60% 50%" },
+    { photo: "img/story-2.jpg", caption: "Водопад", focus: "30% 50%" },
+    { photo: "img/gallery-bellflowers.jpg", caption: "Луг с колокольчиками" },
+    { photo: "img/story-3.jpg", caption: "Каменные столбы" },
+    { photo: "img/gallery-thistle.jpg", caption: "Чертополох на фоне Эльбруса", focus: "35% 50%" },
+  ],
+  GALLERY_NOTE: "Все фото наши — сняты в походах за травами.",
+
   // Сборщики. ЗАГЛУШКИ — заменить на реальных людей после поездки (с их согласия).
   // ready: true — показывать человека на витрине. Пока ни у кого нет true, вместо раздела — «Скоро познакомим».
   COLLECTORS: [

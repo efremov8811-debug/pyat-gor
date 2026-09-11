@@ -11,6 +11,8 @@
   let current = null; // товар на экране — для кнопки «Заказать»
   let homeScroll = 0; // чтобы вернуться на главную туда же, где был
   let storyIndex = -1; // открытая история, -1 — закрыта
+  let galleryIndex = -1; // открытое на весь экран фото из походов, -1 — закрыто
+  const viewerOpen = () => storyIndex >= 0 || galleryIndex >= 0;
 
   // Истории без обложки (файла ещё нет) не показываем
   const missingStories = new Set();
@@ -126,6 +128,21 @@
     ).join("")}</div>`;
   }
 
+  function gallery() {
+    if (!S.GALLERY || !S.GALLERY.length) return "";
+    const last = S.GALLERY.length - 1;
+    return `
+      <section id="trips">
+        ${head("Из походов за травами", "Где мы бываем")}
+        <div class="gallery">${S.GALLERY.map((g, i) => `
+          <button class="gal-item${i === 0 || i === last ? " wide" : ""}" data-gallery="${i}" aria-label="${g.caption}">
+            ${photo(g.photo, g.caption, "", g.focus)}
+            <span class="gal-cap">${g.caption}</span>
+          </button>`).join("")}</div>
+        <p class="gal-note">${S.GALLERY_NOTE}</p>
+      </section>`;
+  }
+
   function homePage() {
     const H = S.HERO;
     const tabs = [
@@ -179,6 +196,8 @@
         ${head("Каталог", "Выбери свою гору")}
         <div class="grid">${TEAS.map(teaCard).join("")}${setCard()}</div>
       </section>
+
+      ${gallery()}
 
       <section id="collectors">
         ${head("Сборщики", "Люди, которых мы знаем лично")}
@@ -303,6 +322,7 @@
   function openStory(i) {
     const s = S.STORIES[i];
     storyIndex = i;
+    galleryIndex = -1;
     viewer.style.setProperty("--c", s.color);
     viewer.innerHTML = `
       <div class="sv-media">
@@ -321,9 +341,29 @@
     updateTelegramButtons();
   }
 
-  function closeStory() {
-    if (storyIndex < 0) return;
+  // Фото из походов на весь экран — тот же экран, что у историй, но фото целиком, без обрезки
+  function openGallery(i) {
+    const g = S.GALLERY[i];
     storyIndex = -1;
+    galleryIndex = i;
+    viewer.style.setProperty("--c", "#000");
+    viewer.innerHTML = `
+      <div class="sv-media sv-contain">${photo(g.photo, g.caption)}</div>
+      <div class="sv-bars">${S.GALLERY.map((_, j) => `<span class="${j <= i ? "on" : ""}"></span>`).join("")}</div>
+      <div class="sv-title">${g.caption}</div>
+      <button class="sv-prev" data-gprev aria-label="Предыдущее фото"></button>
+      <button class="sv-next" data-gnext aria-label="Следующее фото"></button>
+      <button class="sv-close" data-close aria-label="Закрыть">×</button>`;
+    viewer.hidden = false;
+    document.body.style.overflow = "hidden";
+    updateTelegramButtons();
+  }
+
+  // Закрывает и истории, и фото из походов
+  function closeStory() {
+    if (!viewerOpen()) return;
+    storyIndex = -1;
+    galleryIndex = -1;
     viewer.hidden = true;
     viewer.innerHTML = "";
     document.body.style.overflow = "";
@@ -371,9 +411,9 @@
   function updateTelegramButtons() {
     if (!inTg) return;
     if (tg.isVersionAtLeast("6.1")) {
-      page !== "home" || storyIndex >= 0 ? tg.BackButton.show() : tg.BackButton.hide();
+      page !== "home" || viewerOpen() ? tg.BackButton.show() : tg.BackButton.hide();
     }
-    if (current && storyIndex < 0) {
+    if (current && !viewerOpen()) {
       tg.MainButton.setParams({
         text: `Заказать · ${rub(current.price)}`,
         color: current.color,
@@ -412,12 +452,17 @@
   }
 
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-order],[data-scroll],[data-story],[data-close],[data-next],[data-prev]");
+    const el = e.target.closest(
+      "[data-order],[data-scroll],[data-story],[data-gallery],[data-close],[data-next],[data-prev],[data-gnext],[data-gprev]"
+    );
     if (!el) return;
     const d = el.dataset;
     if ("order" in d) order(current);
     else if ("scroll" in d) document.getElementById(d.scroll).scrollIntoView({ behavior: "smooth", block: "start" });
     else if ("story" in d) openStory(+d.story);
+    else if ("gallery" in d) openGallery(+d.gallery);
+    else if ("gnext" in d) galleryIndex + 1 < S.GALLERY.length ? openGallery(galleryIndex + 1) : closeStory();
+    else if ("gprev" in d) openGallery(Math.max(0, galleryIndex - 1));
     else if ("close" in d) closeStory();
     else if ("next" in d) {
       const j = neighbourStory(storyIndex, 1);
@@ -436,7 +481,7 @@
     tg.onEvent("themeChanged", applyTheme);
     tg.MainButton.onClick(() => order(current));
     if (tg.isVersionAtLeast("6.1")) {
-      tg.BackButton.onClick(() => (storyIndex >= 0 ? closeStory() : (location.hash = "#/")));
+      tg.BackButton.onClick(() => (viewerOpen() ? closeStory() : (location.hash = "#/")));
     }
   }
 
