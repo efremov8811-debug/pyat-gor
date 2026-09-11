@@ -44,10 +44,15 @@
     `<svg class="mtn ${cls}" viewBox="0 0 200 100" aria-hidden="true"><path d="${SHAPES[shape]}"/></svg>`;
 
   // Фото с заглушкой: если файла нет, <img> удаляет себя и видна подпись
+  // Адрес фото с версией публикации: GitHub и Telegram держат картинки в кэше,
+  // и без неё заменённый снимок с тем же именем файла показывался бы по-старому
+  const asset = (src) =>
+    window.ASSET_V && window.ASSET_V !== "dev" ? `${src}?v=${window.ASSET_V}` : src;
+
   // focus — какую часть фото оставить при обрезке, например "30% 50%".
   // shape — силуэт горы, который виден, пока своего фото нет.
   const photo = (src, label, cls = "", focus = "", shape = "") =>
-    `<div class="ph ${cls}" data-label="${label}">${shape ? mountain(shape, "ph-mtn") : ""}<img src="${src}" alt="${label}" loading="lazy"${
+    `<div class="ph ${cls}" data-label="${label}">${shape ? mountain(shape, "ph-mtn") : ""}<img src="${asset(src)}" alt="${label}" loading="lazy"${
       focus ? ` style="object-position:${focus}"` : ""
     } onerror="this.remove()"></div>`;
 
@@ -146,7 +151,7 @@
       <div class="stories" id="stories">${S.STORIES.map((s, i) =>
         missingStories.has(i) ? "" : `
           <button class="story-btn" data-story="${i}">
-            <span class="story-ring" style="--c:${s.color}"><span class="ph"><img src="${s.cover}" alt="" onerror="storyMissing(${i}, this)"${
+            <span class="story-ring" style="--c:${s.color}"><span class="ph"><img src="${asset(s.cover)}" alt="" onerror="storyMissing(${i}, this)"${
               s.focus ? ` style="object-position:${s.focus}"` : ""
             }></span></span>${s.title}
           </button>`
