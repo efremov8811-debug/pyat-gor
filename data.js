@@ -107,23 +107,17 @@ window.SHOP = {
 
   // Видео-истории (кружки вверху главной). Если видео нет — показывается обложка.
   STORIES: [
+    { title: "Эльбрус", cover: "img/gallery-elbrus-valley.jpg", video: "video/story-elbrus.mp4", coverLabel: "Долина с видом на Эльбрус", color: "#e5412f", focus: "45% 40%" },
     { title: "Домбай", cover: "img/story-1.jpg", video: "video/story-1.mp4", coverLabel: "Долина в Домбае", color: "#16a36b", focus: "60% 50%" },
     { title: "Водопад", cover: "img/story-2.jpg", video: "video/story-2.mp4", coverLabel: "Водопад в горах", color: "#6d4dff", focus: "30% 50%" },
-    { title: "Скалы", cover: "img/story-3.jpg", video: "video/story-3.mp4", coverLabel: "Каменные столбы", color: "#ff7a00" },
+    { title: "Луг", cover: "img/gallery-bellflowers.jpg", video: "video/story-meadow.mp4", coverLabel: "Луг с колокольчиками", color: "#ff7a00" },
+    { title: "Скалы", cover: "img/story-3.jpg", video: "video/story-3.mp4", coverLabel: "Каменные столбы", color: "#e5412f" },
+    { title: "Чертополох", cover: "img/gallery-thistle.jpg", video: "video/story-thistle.mp4", coverLabel: "Чертополох на фоне Эльбруса", color: "#16a36b", focus: "35% 50%" },
     { title: "Фасовка", cover: "img/story-4.jpg", video: "video/story-4.mp4", coverLabel: "Фасуем и клеим наклейки", color: "#e5412f" },
   ],
 
-  // Фото из походов за травами — раздел на главной после каталога. Все фото наши.
-  // Первое и последнее фото — широкие, остальные — парами. Нажатие открывает фото на весь экран.
-  GALLERY: [
-    { photo: "img/gallery-elbrus-valley.jpg", caption: "Долина с видом на Эльбрус", focus: "45% 40%" },
-    { photo: "img/story-1.jpg", caption: "Домбай", focus: "60% 50%" },
-    { photo: "img/story-2.jpg", caption: "Водопад", focus: "30% 50%" },
-    { photo: "img/gallery-bellflowers.jpg", caption: "Луг с колокольчиками" },
-    { photo: "img/story-3.jpg", caption: "Каменные столбы" },
-    { photo: "img/gallery-thistle.jpg", caption: "Чертополох на фоне Эльбруса", focus: "35% 50%" },
-  ],
-  GALLERY_NOTE: "Все фото наши — сняты в походах за травами.",
+  // Подпись к историям: над кружками — «Из походов за травами», в открытой истории — эта фраза
+  STORIES_NOTE: "Все фото наши — сняты в походах за травами.",
 
   // Сборщики. ЗАГЛУШКИ — заменить на реальных людей после поездки (с их согласия).
   // ready: true — показывать человека на витрине. Пока ни у кого нет true, вместо раздела — «Скоро познакомим».

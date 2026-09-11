@@ -11,8 +11,7 @@
   let current = null; // товар на экране — для кнопки «Заказать»
   let homeScroll = 0; // чтобы вернуться на главную туда же, где был
   let storyIndex = -1; // открытая история, -1 — закрыта
-  let galleryIndex = -1; // открытое на весь экран фото из походов, -1 — закрыто
-  const viewerOpen = () => storyIndex >= 0 || galleryIndex >= 0;
+  const viewerOpen = () => storyIndex >= 0;
 
   // Истории без обложки (файла ещё нет) не показываем
   const missingStories = new Set();
@@ -128,21 +127,6 @@
     ).join("")}</div>`;
   }
 
-  function gallery() {
-    if (!S.GALLERY || !S.GALLERY.length) return "";
-    const last = S.GALLERY.length - 1;
-    return `
-      <section id="trips">
-        ${head("Из походов за травами", "Где мы бываем")}
-        <div class="gallery">${S.GALLERY.map((g, i) => `
-          <button class="gal-item${i === 0 || i === last ? " wide" : ""}" data-gallery="${i}" aria-label="${g.caption}">
-            ${photo(g.photo, g.caption, "", g.focus)}
-            <span class="gal-cap">${g.caption}</span>
-          </button>`).join("")}</div>
-        <p class="gal-note">${S.GALLERY_NOTE}</p>
-      </section>`;
-  }
-
   function homePage() {
     const H = S.HERO;
     const tabs = [
@@ -165,6 +149,7 @@
 
       <nav class="tabs">${tabs.map(([id, t]) => `<button class="tab" data-scroll="${id}">${t}</button>`).join("")}</nav>
 
+      <span class="eyebrow stories-note">Из походов за травами</span>
       <div class="stories" id="stories">${S.STORIES.map((s, i) =>
         missingStories.has(i) ? "" : `
           <button class="story-btn" data-story="${i}">
@@ -196,8 +181,6 @@
         ${head("Каталог", "Выбери свою гору")}
         <div class="grid">${TEAS.map(teaCard).join("")}${setCard()}</div>
       </section>
-
-      ${gallery()}
 
       <section id="collectors">
         ${head("Сборщики", "Люди, которых мы знаем лично")}
@@ -322,17 +305,16 @@
   function openStory(i) {
     const s = S.STORIES[i];
     storyIndex = i;
-    galleryIndex = -1;
     viewer.style.setProperty("--c", s.color);
     viewer.innerHTML = `
-      <div class="sv-media">
+      <div class="sv-media sv-contain">
         ${photo(s.cover, s.coverLabel, "on-color", s.focus)}
         <video src="${s.video}" autoplay muted loop playsinline onerror="this.remove()"></video>
       </div>
       <div class="sv-bars">${S.STORIES.map((_, j) =>
         missingStories.has(j) ? "" : `<span class="${j < i ? "done" : j === i ? "on" : ""}"></span>`
       ).join("")}</div>
-      <div class="sv-title">${s.coverLabel}</div>
+      <div class="sv-title">${s.coverLabel}${S.STORIES_NOTE ? `<small>${S.STORIES_NOTE}</small>` : ""}</div>
       <button class="sv-prev" data-prev aria-label="Предыдущая история"></button>
       <button class="sv-next" data-next aria-label="Следующая история"></button>
       <button class="sv-close" data-close aria-label="Закрыть">×</button>`;
@@ -341,29 +323,9 @@
     updateTelegramButtons();
   }
 
-  // Фото из походов на весь экран — тот же экран, что у историй, но фото целиком, без обрезки
-  function openGallery(i) {
-    const g = S.GALLERY[i];
-    storyIndex = -1;
-    galleryIndex = i;
-    viewer.style.setProperty("--c", "#000");
-    viewer.innerHTML = `
-      <div class="sv-media sv-contain">${photo(g.photo, g.caption)}</div>
-      <div class="sv-bars">${S.GALLERY.map((_, j) => `<span class="${j <= i ? "on" : ""}"></span>`).join("")}</div>
-      <div class="sv-title">${g.caption}</div>
-      <button class="sv-prev" data-gprev aria-label="Предыдущее фото"></button>
-      <button class="sv-next" data-gnext aria-label="Следующее фото"></button>
-      <button class="sv-close" data-close aria-label="Закрыть">×</button>`;
-    viewer.hidden = false;
-    document.body.style.overflow = "hidden";
-    updateTelegramButtons();
-  }
-
-  // Закрывает и истории, и фото из походов
   function closeStory() {
     if (!viewerOpen()) return;
     storyIndex = -1;
-    galleryIndex = -1;
     viewer.hidden = true;
     viewer.innerHTML = "";
     document.body.style.overflow = "";
@@ -452,17 +414,12 @@
   }
 
   document.addEventListener("click", (e) => {
-    const el = e.target.closest(
-      "[data-order],[data-scroll],[data-story],[data-gallery],[data-close],[data-next],[data-prev],[data-gnext],[data-gprev]"
-    );
+    const el = e.target.closest("[data-order],[data-scroll],[data-story],[data-close],[data-next],[data-prev]");
     if (!el) return;
     const d = el.dataset;
     if ("order" in d) order(current);
     else if ("scroll" in d) document.getElementById(d.scroll).scrollIntoView({ behavior: "smooth", block: "start" });
     else if ("story" in d) openStory(+d.story);
-    else if ("gallery" in d) openGallery(+d.gallery);
-    else if ("gnext" in d) galleryIndex + 1 < S.GALLERY.length ? openGallery(galleryIndex + 1) : closeStory();
-    else if ("gprev" in d) openGallery(Math.max(0, galleryIndex - 1));
     else if ("close" in d) closeStory();
     else if ("next" in d) {
       const j = neighbourStory(storyIndex, 1);
@@ -473,6 +430,23 @@
     }
   });
   window.addEventListener("hashchange", render);
+
+  // Ленту историй на компьютере листаем колёсиком мыши: вбок её иначе не прокрутить.
+  // У краёв ленты колёсико снова прокручивает страницу.
+  document.addEventListener(
+    "wheel",
+    (e) => {
+      const strip = e.target.closest && e.target.closest(".stories");
+      if (!strip || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const max = strip.scrollWidth - strip.clientWidth;
+      const atStart = strip.scrollLeft <= 0 && e.deltaY < 0;
+      const atEnd = strip.scrollLeft >= max - 1 && e.deltaY > 0;
+      if (max <= 0 || atStart || atEnd) return;
+      strip.scrollLeft += e.deltaY;
+      e.preventDefault();
+    },
+    { passive: false }
+  );
 
   if (inTg) {
     tg.ready();
