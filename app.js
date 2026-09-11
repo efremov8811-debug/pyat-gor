@@ -12,6 +12,21 @@
   let homeScroll = 0; // чтобы вернуться на главную туда же, где был
   let storyIndex = -1; // открытая история, -1 — закрыта
 
+  // Истории без обложки (файла ещё нет) не показываем
+  const missingStories = new Set();
+  window.storyMissing = (i, img) => {
+    missingStories.add(i);
+    img.closest(".story-btn")?.remove();
+    if (!document.querySelector(".story-btn")) document.getElementById("stories")?.remove();
+  };
+  const neighbourStory = (from, step) => {
+    for (let j = from + step; j >= 0 && j < S.STORIES.length; j += step) if (!missingStories.has(j)) return j;
+    return -1;
+  };
+
+  // ?dev в адресе — показать подписи «Фото: …» на местах, где фото ещё нет
+  document.documentElement.classList.toggle("dev", new URLSearchParams(location.search).has("dev"));
+
   const rub = (n) => n.toLocaleString("ru-RU") + " ₽";
 
   // Силуэты гор, viewBox 0 0 200 100
@@ -26,9 +41,10 @@
     `<svg class="mtn ${cls}" viewBox="0 0 200 100" aria-hidden="true"><path d="${SHAPES[shape]}"/></svg>`;
 
   // Фото с заглушкой: если файла нет, <img> удаляет себя и видна подпись
-  // focus — какую часть фото оставить при обрезке, например "30% 50%"
-  const photo = (src, label, cls = "", focus = "") =>
-    `<div class="ph ${cls}" data-label="${label}"><img src="${src}" alt="${label}" loading="lazy"${
+  // focus — какую часть фото оставить при обрезке, например "30% 50%".
+  // shape — силуэт горы, который виден, пока своего фото нет.
+  const photo = (src, label, cls = "", focus = "", shape = "") =>
+    `<div class="ph ${cls}" data-label="${label}">${shape ? mountain(shape, "ph-mtn") : ""}<img src="${src}" alt="${label}" loading="lazy"${
       focus ? ` style="object-position:${focus}"` : ""
     } onerror="this.remove()"></div>`;
 
@@ -46,7 +62,7 @@
           <span class="tea-taste">${t.taste}</span>
           <span class="tea-price">${rub(t.price)} · ${t.weight} г</span>
         </div>
-        ${photo(t.photo, t.photoLabel, "on-color", t.focus)}
+        ${photo(t.photo, t.photoLabel, "on-color", t.focus, t.shape)}
         ${mountain(t.shape, "tea-mtn")}
       </a>`;
   }
@@ -60,12 +76,19 @@
           <div class="set-dots">${TEAS.map((t) => `<span style="background:${t.color}"></span>`).join("")}</div>
           <span class="tea-price">${rub(SET.price)} · ${SET.weight} г</span>
         </div>
-        ${photo(SET.photo, SET.photoLabel, "on-color")}
+        ${photo(SET.photo, SET.photoLabel, "on-color", "", "beshtau")}
       </a>`;
   }
 
   function collectors() {
-    return S.COLLECTORS.map(
+    const ready = S.COLLECTORS.filter((c) => c.ready);
+    if (!ready.length) {
+      return `
+        <div class="empty">
+          <p>Скоро познакомим тебя с людьми, у которых мы берём травы. Снимаем их во время поездки на КМВ.</p>
+        </div>`;
+    }
+    return `<div class="hscroll">${ready.map(
       (c) => `
         <article class="person">
           ${photo(c.photo, "сборщик, " + c.place)}
@@ -75,7 +98,7 @@
             <p class="person-quote">«${c.quote}»</p>
           </div>
         </article>`
-    ).join("");
+    ).join("")}</div>`;
   }
 
   function reviews() {
@@ -99,7 +122,6 @@
     const H = S.HERO;
     const tabs = [
       ["catalog", "Сборы"],
-      ["stories", "Истории"],
       ["collectors", "Сборщики"],
       ["reviews", "Отзывы"],
       ["delivery", "Доставка"],
@@ -118,15 +140,26 @@
 
       <nav class="tabs">${tabs.map(([id, t]) => `<button class="tab" data-scroll="${id}">${t}</button>`).join("")}</nav>
 
-      <div class="stories" id="stories">${S.STORIES.map(
-        (s, i) => `
+      <div class="stories" id="stories">${S.STORIES.map((s, i) =>
+        missingStories.has(i) ? "" : `
           <button class="story-btn" data-story="${i}">
-            <span class="story-ring" style="--c:${s.color}">${photo(s.cover, s.coverLabel, "", s.focus)}</span>${s.title}
+            <span class="story-ring" style="--c:${s.color}"><span class="ph"><img src="${s.cover}" alt="" onerror="storyMissing(${i}, this)"${
+              s.focus ? ` style="object-position:${s.focus}"` : ""
+            }></span></span>${s.title}
           </button>`
       ).join("")}</div>
 
       <section class="five">
-        <div class="five-num">5</div>
+        <svg class="five-num" viewBox="0 0 100 130" aria-hidden="true">
+          <defs>
+            <linearGradient id="five-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#16a36b"/><stop offset=".38" stop-color="#6d4dff"/>
+              <stop offset=".68" stop-color="#e5412f"/><stop offset="1" stop-color="#ff7a00"/>
+            </linearGradient>
+          </defs>
+          <text x="50" y="112" text-anchor="middle" fill="url(#five-grad)"
+                font-family="'Playfair Display', Georgia, serif" font-weight="800" font-size="140">5</text>
+        </svg>
         <div>
           <h2>Почему «Пять гор»</h2>
           <p>Бештау по-тюркски — «пять гор». Так называется гора над Пятигорском, и так мы назвали наш чай.</p>
@@ -215,7 +248,7 @@
         <section>
           ${head("История горы", t.name)}
           <p class="story-quote">${t.story}</p>
-          ${c ? `
+          ${c && c.ready ? `
             <div class="collector-mini">
               ${photo(c.photo, c.name)}
               <div><small>Собирал</small><b>${c.name}</b>, ${c.place}</div>
@@ -269,7 +302,9 @@
         ${photo(s.cover, s.coverLabel, "on-color", s.focus)}
         <video src="${s.video}" autoplay muted loop playsinline onerror="this.remove()"></video>
       </div>
-      <div class="sv-bars">${S.STORIES.map((_, j) => `<span class="${j < i ? "done" : j === i ? "on" : ""}"></span>`).join("")}</div>
+      <div class="sv-bars">${S.STORIES.map((_, j) =>
+        missingStories.has(j) ? "" : `<span class="${j < i ? "done" : j === i ? "on" : ""}"></span>`
+      ).join("")}</div>
       <div class="sv-title">${s.coverLabel}</div>
       <button class="sv-prev" data-prev aria-label="Предыдущая история"></button>
       <button class="sv-next" data-next aria-label="Следующая история"></button>
@@ -377,8 +412,13 @@
     else if ("scroll" in d) document.getElementById(d.scroll).scrollIntoView({ behavior: "smooth", block: "start" });
     else if ("story" in d) openStory(+d.story);
     else if ("close" in d) closeStory();
-    else if ("next" in d) storyIndex + 1 < S.STORIES.length ? openStory(storyIndex + 1) : closeStory();
-    else if ("prev" in d) openStory(Math.max(0, storyIndex - 1));
+    else if ("next" in d) {
+      const j = neighbourStory(storyIndex, 1);
+      j < 0 ? closeStory() : openStory(j);
+    } else if ("prev" in d) {
+      const j = neighbourStory(storyIndex, -1);
+      if (j >= 0) openStory(j);
+    }
   });
   window.addEventListener("hashchange", render);
 
