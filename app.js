@@ -149,7 +149,7 @@
 
       <nav class="tabs">${tabs.map(([id, t]) => `<button class="tab" data-scroll="${id}">${t}</button>`).join("")}</nav>
 
-      <span class="eyebrow stories-note">Из походов за травами</span>
+      <span class="eyebrow stories-note">${S.STORIES_NOTE}</span>
       <div class="stories" id="stories">${S.STORIES.map((s, i) =>
         missingStories.has(i) ? "" : `
           <button class="story-btn" data-story="${i}">
@@ -314,7 +314,7 @@
       <div class="sv-bars">${S.STORIES.map((_, j) =>
         missingStories.has(j) ? "" : `<span class="${j < i ? "done" : j === i ? "on" : ""}"></span>`
       ).join("")}</div>
-      <div class="sv-title">${s.coverLabel}${S.STORIES_NOTE ? `<small>${S.STORIES_NOTE}</small>` : ""}</div>
+      <div class="sv-title">${s.coverLabel}${s.desc ? `<small>${s.desc}</small>` : ""}</div>
       <button class="sv-prev" data-prev aria-label="Предыдущая история"></button>
       <button class="sv-next" data-next aria-label="Следующая история"></button>
       <button class="sv-close" data-close aria-label="Закрыть">×</button>`;

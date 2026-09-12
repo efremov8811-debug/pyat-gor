@@ -107,17 +107,17 @@ window.SHOP = {
 
   // Видео-истории (кружки вверху главной). Если видео нет — показывается обложка.
   STORIES: [
-    { title: "Эльбрус", cover: "img/gallery-elbrus-valley.jpg", video: "video/story-elbrus.mp4", coverLabel: "Долина с видом на Эльбрус", color: "#e5412f", focus: "45% 40%" },
-    { title: "Домбай", cover: "img/story-1.jpg", video: "video/story-1.mp4", coverLabel: "Долина в Домбае", color: "#16a36b", focus: "60% 50%" },
-    { title: "Водопад", cover: "img/story-2.jpg", video: "video/story-2.mp4", coverLabel: "Водопад в горах", color: "#6d4dff", focus: "30% 50%" },
-    { title: "Луг", cover: "img/gallery-bellflowers.jpg", video: "video/story-meadow.mp4", coverLabel: "Луг с колокольчиками", color: "#ff7a00" },
-    { title: "Скалы", cover: "img/story-3.jpg", video: "video/story-3.mp4", coverLabel: "Каменные столбы", color: "#e5412f" },
-    { title: "Чертополох", cover: "img/gallery-thistle.jpg", video: "video/story-thistle.mp4", coverLabel: "Чертополох на фоне Эльбруса", color: "#16a36b", focus: "35% 50%" },
+    { title: "Эльбрус", cover: "img/gallery-elbrus-valley.jpg", video: "video/story-elbrus.mp4", coverLabel: "Долина с видом на Эльбрус", desc: "Зелёные склоны, а вдалеке — Эльбрус.", color: "#e5412f", focus: "45% 40%" },
+    { title: "Домбай", cover: "img/story-1.jpg", video: "video/story-1.mp4", coverLabel: "Долина в Домбае", desc: "Лесная долина в Домбае, тропа и стога у леса.", color: "#16a36b", focus: "60% 50%" },
+    { title: "Водопад", cover: "img/story-2.jpg", video: "video/story-2.mp4", coverLabel: "Водопад в горах", desc: "Водопад в ущелье среди зелёных склонов.", color: "#6d4dff", focus: "30% 50%" },
+    { title: "Луг", cover: "img/gallery-bellflowers.jpg", video: "video/story-meadow.mp4", coverLabel: "Луг с колокольчиками", desc: "Колокольчики и лютики на склоне под красными скалами.", color: "#ff7a00" },
+    { title: "Скалы", cover: "img/story-3.jpg", video: "video/story-3.mp4", coverLabel: "Каменные столбы", desc: "Вертикальные скалы, будто каменные органные трубы.", color: "#e5412f" },
+    { title: "Чертополох", cover: "img/gallery-thistle.jpg", video: "video/story-thistle.mp4", coverLabel: "Чертополох на фоне Эльбруса", desc: "Горный чертополох, за ним — снежный Эльбрус.", color: "#16a36b", focus: "35% 50%" },
     { title: "Фасовка", cover: "img/story-4.jpg", video: "video/story-4.mp4", coverLabel: "Фасуем и клеим наклейки", color: "#e5412f" },
   ],
 
-  // Подпись к историям: над кружками — «Из походов за травами», в открытой истории — эта фраза
-  STORIES_NOTE: "Все фото наши — сняты в походах за травами.",
+  // Надпись над кружками историй на главной. Под каждым фото — своё описание (desc выше)
+  STORIES_NOTE: "Из походов за травами",
 
   // Сборщики. ЗАГЛУШКИ — заменить на реальных людей после поездки (с их согласия).
   // ready: true — показывать человека на витрине. Пока ни у кого нет true, вместо раздела — «Скоро познакомим».
