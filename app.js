@@ -206,6 +206,7 @@
       <footer>
         <div class="footer-logo">Пять гор</div>
         Кавказские Минеральные Воды
+        <div class="footer-links"><a href="privacy.html">Политика конфиденциальности</a></div>
       </footer>`;
   }
 

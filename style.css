@@ -310,6 +310,8 @@ section { margin-top: 44px; scroll-margin-top: 64px; }
 .row span { font-size: 14px; color: var(--muted); }
 
 footer { margin-top: 48px; text-align: center; font-size: 13px; color: var(--muted); }
+footer .footer-links { margin-top: 8px; }
+footer .footer-links a { text-decoration: underline; }
 footer .footer-logo { font: 800 22px var(--serif); color: var(--text); margin-bottom: 4px; }
 
 /* ---------- Страница сбора ---------- */
