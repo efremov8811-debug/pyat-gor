@@ -37,6 +37,8 @@
   const SHAPES = {
     beshtau: "M0 100 L0 84 L22 72 L38 54 L50 62 L66 36 L80 50 L100 20 L118 46 L132 38 L148 58 L162 52 L180 74 L200 82 L200 100 Z",
     mashuk: "M0 100 L0 88 C40 82 60 40 100 36 C140 40 160 82 200 88 L200 100 Z",
+    // одиночный крутой купол, покрытый лесом
+    zheleznaya: "M0 100 L0 90 C44 88 66 34 100 26 C134 34 156 88 200 90 L200 100 Z",
     elbrus: "M0 100 L0 86 L40 72 L70 46 L92 22 L104 30 L116 18 L140 46 L170 70 L200 80 L200 100 Z",
     // плато с плоской вершиной и крутыми склонами
     bermamyt: "M0 100 L0 84 L30 74 L52 46 L62 38 L140 36 L150 44 L172 70 L200 80 L200 100 Z",
@@ -143,7 +145,7 @@
           <span class="eyebrow">Горный чай КМВ</span>
           <h1>${H.title}</h1>
           <p class="hero-lead">${H.lead}</p>
-          <div class="hero-dots">${TEAS.map((t) => `<span style="background:${t.color}"></span>`).join("")}<b>4 сбора · 4 горы</b></div>
+          <div class="hero-dots">${TEAS.map((t) => `<span style="background:${t.color}"></span>`).join("")}<b>5 сборов · 5 гор</b></div>
         </div>
       </header>
 
@@ -163,8 +165,9 @@
         <svg class="five-num" viewBox="0 0 100 130" aria-hidden="true">
           <defs>
             <linearGradient id="five-grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#16a36b"/><stop offset=".38" stop-color="#6d4dff"/>
-              <stop offset=".68" stop-color="#e5412f"/><stop offset="1" stop-color="#ff7a00"/>
+              <stop offset="0" stop-color="#16a36b"/><stop offset=".28" stop-color="#6d4dff"/>
+              <stop offset=".5" stop-color="#c2307a"/><stop offset=".74" stop-color="#e5412f"/>
+              <stop offset="1" stop-color="#ff7a00"/>
             </linearGradient>
           </defs>
           <text x="50" y="112" text-anchor="middle" fill="url(#five-grad)"
@@ -172,7 +175,7 @@
         </svg>
         <div>
           <h2>Почему «Пять гор»</h2>
-          <p>Бештау по-тюркски — «пять гор». Так называется гора над Пятигорском, и так мы назвали наш чай.</p>
+          <p>Бештау по-тюркски — «пять гор». Так называется гора над Пятигорском, и так мы назвали наш чай: пять сборов — пять гор.</p>
         </div>
       </section>
       <p class="note">Настоящий чайный куст на КМВ не растёт. Поэтому честно: это травяные сборы — горный чай, каким его заваривают здесь. На каждой пачке написано, где росли травы.</p>
@@ -295,7 +298,7 @@
         <p class="p-lead">${SET.text}</p>
         ${orderButton(SET)}
         <section>
-          ${head("Что внутри", "Четыре горы в одной коробке")}
+          ${head("Что внутри", "Пять гор в одной коробке")}
           <div class="grid">${TEAS.map(teaCard).join("")}</div>
         </section>
       </div>`;

@@ -8,7 +8,7 @@
     // Если что-то сломается, показываем текст ошибки вместо пустого экрана — его можно прислать разработчику
     // Версия публикации — добавляется к адресам фото, чтобы заменённые снимки сразу обновлялись.
     // Проставляет publish-webapp.ps1; "dev" — локальный просмотр без версии.
-    window.ASSET_V = "20260913190256";
+    window.ASSET_V = "20260915164159";
     window.onerror = function (msg, src, line) {
       var box = document.createElement("pre");
       box.style.cssText = "white-space:pre-wrap;margin:16px;padding:12px;border-radius:12px;background:#fee;color:#900;font:13px/1.4 monospace";
@@ -21,12 +21,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Manrope:wght@400;500;700;800&display=swap">
   <!-- ?v= проставляет publish-webapp.ps1 при каждой публикации, чтобы Telegram не брал старые файлы из кэша -->
-  <link rel="stylesheet" href="style.css?v=20260913190256">
+  <link rel="stylesheet" href="style.css?v=20260915164159">
 </head>
 <body>
   <main id="app"></main>
   <div id="story" class="story-viewer" hidden></div>
-  <script src="data.js?v=20260913190256"></script>
-  <script src="app.js?v=20260913190256"></script>
+  <script src="data.js?v=20260915164159"></script>
+  <script src="app.js?v=20260915164159"></script>
 </body>
 </html>

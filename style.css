@@ -403,8 +403,10 @@ footer .footer-logo { font: 800 22px var(--serif); color: var(--text); margin-bo
 .brew span { font-size: 12px; opacity: .85; }
 .storage { margin-top: 12px; font-size: 14px; color: var(--muted); }
 
-/* «Попробуй ещё»: все остальные сборы + набор сеткой 2×2, без прокрутки вбок */
+/* «Попробуй ещё»: все остальные сборы + набор сеткой в 2 колонки, без прокрутки вбок */
 .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* если набор остался в ряду один — растягиваем его на всю ширину */
+.mini-grid .mini-set:nth-child(odd) { grid-column: 1 / -1; }
 .mini {
   position: relative;
   min-width: 0;
